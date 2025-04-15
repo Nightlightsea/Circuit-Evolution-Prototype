@@ -42,7 +42,7 @@ def circuit_run(circuit: CircuitObject.CircuitObjekt, truth_table, debug=False) 
 
 def calculate_score(debug, lanes, score, truth_table_row):
     factor = sum([0 if lanes[-1][x] == truth_table_row[1][x] else 1 for x in range(len(lanes[-1]))])
-    print(f"got: {lanes[-1]} expected: {factor}") if debug else None
+    print(f"got: {lanes[-1]} expected: {[x for x in truth_table_row[1]]} diff: {factor}") if debug else None
     for t_t, check in enumerate(lanes[-1]):
         abs1 = abs(check - truth_table_row[1][t_t]) * factor
         score += (1 / abs1) if abs1 != 0 else 0
