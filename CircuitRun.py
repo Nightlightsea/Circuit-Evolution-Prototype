@@ -2,7 +2,6 @@ import copy
 
 import CircuitObject
 import settings
-from LogicGates import logic_and, logic_not
 
 compute_rounds = settings.COMPUTE_ROUNDS
 
