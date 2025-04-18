@@ -1,4 +1,4 @@
-from CircuitRun import circuit_run
+from CircuitRun import circuit_run_truth_table
 
 
 def evaluator(generation, input_output, size_penalty=False):
@@ -7,7 +7,7 @@ def evaluator(generation, input_output, size_penalty=False):
     y = 0.0
     gen_score_list = []
     for index, g in enumerate(generation):
-        gen_score = circuit_run(g, input_output)
+        gen_score = circuit_run_truth_table(g, input_output)
         gen_score = gen_score - g.get_gate_length() if size_penalty else gen_score
         gen_score_list.append([gen_score, g])
         if gen_score > y:

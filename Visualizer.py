@@ -19,11 +19,17 @@ def visualizer(lanes, gates):
                 the_gate = f"{u[3]}{gate_count}"
                 break
 
-        for inputs in gate[1]:
-            print(f"{lane[f"{inputs}"]} --> {the_gate}")
+        for i, inputs in enumerate(gate[1]):
+            if "cable" in the_gate:
+                print(f"{lane[f"{inputs}"]} --> ", end="")
+            else:
+                print(f"{lane[f"{inputs}"]} -- \"in{i}\" --> {the_gate}")
 
-        for outputs in gate[2]:
-            print(f"{the_gate} --> {lane[f"{outputs}"]}")
+        for o, outputs in enumerate(gate[2]):
+            if "cable" in the_gate:
+                print(f"{lane[f"{outputs}"]}")
+            else:
+                print(f"{the_gate} -- \"out{o}\" --> {lane[f"{outputs}"]}")
 
         gate_count += 1
 

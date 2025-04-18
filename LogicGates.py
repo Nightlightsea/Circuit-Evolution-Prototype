@@ -25,14 +25,18 @@ def logic_not(input_: list) -> int:
 def logic_cable(input_: list) -> int:
     return input_[0]
 
+
 def logic_plus(input_: list) -> int:
     return input_[0] + input_[1]
+
 
 def logic_minus(input_: list) -> int:
     return input_[0] - input_[1]
 
+
 def logic_times(input_: list) -> int:
     return input_[0] * input_[1]
+
 
 def logic_div(input_: list) -> float:
     if input_[0] > 0 and input_[1] > 0:
@@ -51,6 +55,5 @@ list_of_logic_gates = [
     [logic_minus,     2, 1, "minus"      ],
     [logic_times,     2, 1, "times"      ],
     [logic_div,     2, 1, "div"      ],
-
 ]
 
