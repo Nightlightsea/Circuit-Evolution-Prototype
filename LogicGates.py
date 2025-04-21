@@ -37,11 +37,24 @@ def logic_minus(input_: list) -> int:
 def logic_times(input_: list) -> int:
     return input_[0] * input_[1]
 
+def logic_cap(input_: list) -> int:
+    if input_[0] > 0:
+        return 1
+    return 0
 
 def logic_div(input_: list) -> float:
     if input_[0] > 0 and input_[1] > 0:
         return input_[0] / input_[1]
     return 0
+
+def logic_modulo(input_: list) -> float:
+    if input_[0] == 0 and input_[1] == 0:
+        return 0
+    elif input_[0] == 0:
+        return input_[1]
+    else:
+        return input_[0]
+
 
 # [function, number of inputs, number of outputs]
 
@@ -54,6 +67,8 @@ list_of_logic_gates = [
     [logic_plus,     2, 1, "plus"      ],
     [logic_minus,     2, 1, "minus"      ],
     [logic_times,     2, 1, "times"      ],
+    [logic_cap,     1, 1, "cap"      ],
     [logic_div,     2, 1, "div"      ],
+    [logic_modulo,     2, 1, "modulo"      ],
 ]
 

@@ -3,8 +3,7 @@ import copy
 import CircuitObject
 import settings
 
-compute_rounds = settings.COMPUTE_ROUNDS
-
+config = settings.EvolutionConfig()
 
 def circuit_run_truth_table(circuit: CircuitObject.CircuitObjekt, truth_table, debug=False) -> int:
     initial_lanes, gates = circuit.__getitem__()
@@ -23,7 +22,7 @@ def execute_circuit(gates, initial_lanes, truth_table_row):
     lanes[0] = list(truth_table_row[0]) # input lanes
     lanes_next_state = copy.deepcopy(lanes)
 
-    for _ in range(compute_rounds):
+    for _ in range(config.COMPUTE_ROUNDS):
         lanes = run_once(gates, lanes, lanes_next_state)
 
     return lanes
@@ -57,7 +56,8 @@ def calculate_score(debug, lanes, truth_table_row):
     print(f"got: {lanes[-1]} expected: {[x for x in truth_table_row[1]]} diff: {factor}") if debug else None
 
     for t_t, check in enumerate(lanes[-1]):
-        abs1 = abs(check - truth_table_row[1][t_t]) + (factor * 10)
-        scores += (1 / abs1) if abs1 != 0 else 1
-
-    return scores * 100
+        abs1 = abs(check - truth_table_row[1][t_t])
+        #abs1 = 1 if abs1 == 0 else abs1
+        #abs1 = 100 * (abs1 / abs1 + 10 ) + (factor * 10)
+        scores += abs1 * abs1 * factor #* (factor*10)
+    return scores

@@ -3,6 +3,9 @@ import random
 
 import CircuitObject
 import LogicGates as lg
+import settings
+
+config = settings.EvolutionConfig()
 
 
 def connect(lanes_t, start=0, end=1):
@@ -23,14 +26,14 @@ def create(in_out: list, lane_num=2, lane_size=4):
         lanes[-1].append(0)
 
     gate_list = []
-    for _ in range(2):
+    for _ in range(config.INITIAL_GATE_AMOUNT):
         gate_list.append(lg.list_of_logic_gates[random.randint(0, len(lg.list_of_logic_gates) - 1)])
 
     gate_connect = []
     for gate in gate_list:
         gate_connect.append([gate[0], [], []])
         for _ in range(gate[1]):
-            gate_connect[-1][1].append(connect(lanes, end=2))
+            gate_connect[-1][1].append(connect(lanes, end=1))
         for _ in range(gate[2]):
             gate_connect[-1][2].append(connect(lanes, start=1))
 
@@ -43,35 +46,44 @@ def mutate(circuit: CircuitObject.CircuitObjekt, mut=0.1):
     initial_lanes, gates = circuit.__getitem__()
     initial_lanes_t = copy.deepcopy(initial_lanes)
     gates_t = copy.deepcopy(gates)
+    mutated = False
 
     # remove a gate
     if mut > random.randint(0, 100) / 100:
-        if len(gates_t) > 1:
+        if len(gates_t) > config.MINIMAL_GATE_AMOUNT:
             to_delete = random.randint(0, len(gates_t) - 1)
             gates_t.remove(gates_t[to_delete])
+            mutated = True
 
     # mutate inputs and outputs
     if mut > random.randint(0, 100) / 100:
         x = random.randint(0, len(gates_t) - 1)
         for i, _ in enumerate(gates_t[x][1]):
             if random.randint(0, 100) > 50:
-                gates_t[x][1][i] = connect(initial_lanes_t, end=2)
+                gates_t[x][1][i] = connect(initial_lanes_t, end=1)
+                mutated = True
         for i, _ in enumerate(gates_t[x][2]):
             if random.randint(0, 100) > 50:
                 gates_t[x][2][i] = connect(initial_lanes_t, start=1)
+                mutated = True
 
     # create a new gate
     if mut > random.randint(0, 100) / 100:
-        random_gate = lg.list_of_logic_gates[random.randint(0, len(lg.list_of_logic_gates) - 1)]
-        gate = [random_gate[0], [], []]
-        for _ in range(random_gate[1]):
-            gate[1].append(connect(initial_lanes_t, end=2))
-        for _ in range(random_gate[2]):
-            gate[2].append(connect(initial_lanes_t, start=1))
-        # add the new gate
-        gates_t.append(gate)
+        if len(gates_t) <= config.MAXIMAL_GATE_AMOUNT:
+            random_gate = lg.list_of_logic_gates[random.randint(0, len(lg.list_of_logic_gates) - 1)]
+            gate = [random_gate[0], [], []]
+            for _ in range(random_gate[1]):
+                gate[1].append(connect(initial_lanes_t, end=1))
+            for _ in range(random_gate[2]):
+                gate[2].append(connect(initial_lanes_t, start=1))
+            mutated = True
+            # add the new gate
+            gates_t.append(gate)
 
-    circuit_new =  CircuitObject.CircuitObjekt(initial_lanes_t, gates_t)
+    if mutated:
+        circuit_new =  CircuitObject.CircuitObjekt(initial_lanes_t, gates_t)
+    else:
+        return circuit
 
     return circuit_new
 
@@ -97,7 +109,11 @@ def crossover(circuits: list[CircuitObject.CircuitObjekt]):
                 running = True
 
         if len(gate_to_select) > 1:
-            selected_gates.append(gate_to_select[random.randint(0, len(gate_to_select) - 1)])
+            if random.randint(0, 100) > 20:
+                for gate in gate_to_select:
+                    selected_gates.append(gate)
+            else:
+                 selected_gates.append(gate_to_select[random.randint(0, len(gate_to_select) - 1)])
         elif 50 > random.randint(0, 100) and running:
             selected_gates.append(gate_to_select[0])
 
