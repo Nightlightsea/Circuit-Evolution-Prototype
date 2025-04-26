@@ -2,31 +2,35 @@ class EvolutionConfig:
     def __init__(self):
 
         # ---Simulation Settings--- #
-        self.GENERATIONS = 5000
-        self.GEN_POOL = 10
+        self.GENERATIONS = 4000
+        self.GEN_POOL = 20
         self.POPULATION = 100
-        self.PENALTY = 0.80
+        self.PENALTY = 0.8
         self.TOP_POPULATION = 0.2
 
+        # ---Multithreading--- #
+        self.MULTITHREADING = True
+        self.CORES = 4
+
         # ---Circuit Settings--- #
-        self.LANES = 10
-        self.LANES_SIZE = 10
+        self.LANES = 5
+        self.LANES_SIZE = 5
         self.INITIAL_GATE_AMOUNT = 5
         self.MINIMAL_GATE_AMOUNT = 2
-        self.MAXIMAL_GATE_AMOUNT = 20
+        self.MAXIMAL_GATE_AMOUNT = 30
 
         # ---Mutations Settings--- #
-        self.MUTATION_RATE = 0.1
+        self.MUTATION_RATE = 0.2
         self.MUTATIONS_IN_GEN = 50
 
         # ---Crossover Settings--- #
-        self.GENERATION_CROSSOVER = 111
+        self.GENERATION_CROSSOVER = 50
         self.GENERATION_CROSSOVER_DURATION = 1
         self.CROSSOVER_IN_GEN = 5
 
         # ---Stuff--- #
         self.NEW_IN_GEN = 40
-        self.COMPUTE_ROUNDS = 5
+        self.COMPUTE_ROUNDS = 10
 
 in_out = [
         [[1, 0, 1, 0], [1, 0, 0, 0]],
@@ -37,16 +41,16 @@ in_out = [
     ]
 
 decimal_to_binary = [
-    [[0, 0], [0,0,0,0]],
-    [[1, 0], [0,0,0,1]],
-    [[2, 0], [0,0,1,0]],
-    [[3, 0], [0,0,1,1]],
-    [[4, 0], [0,1,0,0]],
-    [[5, 0], [0,1,0,1]],
-    [[6, 0], [0,1,1,0]],
-    [[7, 0], [0,1,1,1]],
-    [[8, 0], [1,0,0,0]],
-    [[9, 0], [1,0,0,1]]
+    [[0], [0,0,0,0]],
+    [[1], [0,0,0,1]],
+    [[2], [0,0,1,0]],
+    [[3], [0,0,1,1]],
+    [[4], [0,1,0,0]],
+    [[5], [0,1,0,1]],
+    [[6], [0,1,1,0]],
+    [[7], [0,1,1,1]],
+    [[8], [1,0,0,0]],
+    [[9], [1,0,0,1]]
 ]
 
 truth_table_full_adder_3_in_2_out = [
@@ -59,6 +63,7 @@ truth_table_full_adder_3_in_2_out = [
         [[1, 1, 0], [0, 1]],  # 1 + 1 + 0 = 0, Cout = 1
         [[1, 1, 1], [1, 1]],  # 1 + 1 + 1 = 1, Cout = 1
     ]
+
 
 truth_table_4_in_4_out_logic1 = [
         [[0, 0, 0, 0], [0, 0, 0, 1]],  # In: 0000, Out: 0^0=0, 0&0=0, 0|0=0, !0=1
@@ -79,7 +84,7 @@ truth_table_4_in_4_out_logic1 = [
         [[1, 1, 1, 1], [0, 1, 1, 0]],  # In: 1111, Out: 1^1=0, 1&1=1, 1|1=1, !1=0
     ]
 
-x = [
+pythagoras_truth_table = [
         [[2, 2], [8]],
         [[3, 3], [18]],
         [[2, 3], [13]],

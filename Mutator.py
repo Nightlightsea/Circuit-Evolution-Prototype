@@ -49,7 +49,7 @@ def mutate(circuit: CircuitObject.CircuitObjekt, mut=0.1):
     mutated = False
 
     # remove a gate
-    if mut > random.randint(0, 100) / 100:
+    if mut > random.randint(0, 100) / 100 or len(gates_t) > config.MAXIMAL_GATE_AMOUNT:
         if len(gates_t) > config.MINIMAL_GATE_AMOUNT:
             to_delete = random.randint(0, len(gates_t) - 1)
             gates_t.remove(gates_t[to_delete])
@@ -66,6 +66,33 @@ def mutate(circuit: CircuitObject.CircuitObjekt, mut=0.1):
             if random.randint(0, 100) > 50:
                 gates_t[x][2][i] = connect(initial_lanes_t, start=1)
                 mutated = True
+
+    # exchange gate.
+    if mut > random.randint(0, 100) / 100:
+        ins = []
+        outs = []
+
+        # create a new random gate.
+        random_gate_exchange = lg.list_of_logic_gates[random.randint(0, len(lg.list_of_logic_gates) - 1)]
+        gate_exchange = [random_gate_exchange[0], [], []]
+
+        # get a random gate from circuit.
+        gate_index = random.randint(0, len(gates_t) - 1)
+
+        # get input and output from the circuit gate.
+        for i, _ in enumerate(gates_t[gate_index][1]):
+            ins.append(gates_t[gate_index][1][i])
+        for i, _ in enumerate(gates_t[gate_index][2]):
+            outs.append(gates_t[gate_index][2][i])
+
+        # reuse the inputs and outputs for the new gate.
+        for _ in range(random_gate_exchange[1]):
+            gate_exchange[1].append(ins[random.randint(0, len(ins) - 1)])
+        for _ in range(random_gate_exchange[2]):
+            gate_exchange[2].append(outs[random.randint(0, len(outs) - 1)])
+
+        gates_t.remove(gates_t[gate_index])
+        gates_t.append(gate_exchange)
 
     # create a new gate
     if mut > random.randint(0, 100) / 100:
@@ -88,7 +115,7 @@ def mutate(circuit: CircuitObject.CircuitObjekt, mut=0.1):
     return circuit_new
 
 
-def crossover(circuits: list[CircuitObject.CircuitObjekt]):
+def crossover(circuits: list[CircuitObject.CircuitObjekt]): #needs rewrite!
     circ_gates = []
     running = True
     lanes = copy.deepcopy(circuits[0].__getitem__()[0])
@@ -97,6 +124,7 @@ def crossover(circuits: list[CircuitObject.CircuitObjekt]):
     for cir in circuits:
         circ_gates.append(copy.deepcopy(cir.__getitem__()[1]))
 
+    number_of_selected_gates = 0
     gates_row = 0
     while running:
         running = False
@@ -104,18 +132,22 @@ def crossover(circuits: list[CircuitObject.CircuitObjekt]):
         gate_to_select = []
         for gates_column in circ_gates:
 
-            if gates_row < len(gates_column):
+            if gates_row < len(gates_column) and gates_row <= config.MAXIMAL_GATE_AMOUNT:
                 gate_to_select.append(gates_column[gates_row])
                 running = True
 
-        if len(gate_to_select) > 1:
-            if random.randint(0, 100) > 20:
-                for gate in gate_to_select:
-                    selected_gates.append(gate)
-            else:
-                 selected_gates.append(gate_to_select[random.randint(0, len(gate_to_select) - 1)])
-        elif 50 > random.randint(0, 100) and running:
-            selected_gates.append(gate_to_select[0])
+        if number_of_selected_gates < config.MAXIMAL_GATE_AMOUNT:
+            if len(gate_to_select) > 1:
+                if random.randint(0, 100) > 20:
+                    for gate in gate_to_select:
+                        selected_gates.append(gate)
+                        number_of_selected_gates += 1
+                else:
+                    selected_gates.append(gate_to_select[random.randint(0, len(gate_to_select) - 1)])
+                    number_of_selected_gates += 1
+            elif 50 > random.randint(0, 100) and running:
+                selected_gates.append(gate_to_select[0])
+                number_of_selected_gates += 1
 
         gates_row += 1
 
