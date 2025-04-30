@@ -1,6 +1,8 @@
 import CircuitObject
-from CircuitRun import circuit_run_truth_table
+import settings
+from CircuitRun import execute_circuit
 
+config = settings.EvolutionConfig()
 
 def evaluator(species: list[CircuitObject.CircuitObjekt], gen_num, input_output, size_penalty=False):
 
@@ -23,3 +25,31 @@ def evaluator(species: list[CircuitObject.CircuitObjekt], gen_num, input_output,
         sorted_gen.append(gens[1])
 
     return best, worst_score, sorted_gen
+
+def circuit_run_truth_table(circuit: CircuitObject.CircuitObjekt, truth_table, debug=False) -> int:
+    initial_lanes, gates = circuit.__getitem__()
+    score = 0
+    stab = 0
+
+    for truth_table_row in truth_table:
+
+        output_lanes, stab = execute_circuit(gates, initial_lanes, truth_table_row)
+        score += calculate_score(debug, output_lanes, truth_table_row)
+
+    if stab < round(config.COMPUTE_ROUNDS / 2):
+        score *= 2
+
+    return  score * 100
+
+def calculate_score(debug, lanes, truth_table_row):
+    scores: float = 0
+    factor: float = sum([0 if lanes[-1][x] == truth_table_row[1][x] else 1 for x in range(len(lanes[-1]))])
+
+    print(f"got: {lanes[-1]} expected: {[x for x in truth_table_row[1]]} diff: {factor}") if debug else None
+
+    for t_t, check in enumerate(lanes[-1]):
+        abs1: float = abs(check - truth_table_row[1][t_t])
+        #abs1 = 1 if abs1 == 0 else abs1
+        #abs1 = 100 * (abs1 / abs1 + 10 ) + (factor * 10)
+        scores += abs1 * abs1 * factor #* (factor*10)
+    return scores

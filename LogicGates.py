@@ -1,3 +1,6 @@
+import math
+
+
 def logic_and(input_: list) -> float:
     if input_[0] == 1 and input_[1] == 1:
         return 1
@@ -56,6 +59,23 @@ def logic_not(input_: list) -> float:
     return 1 if input_[0] == 0 else 0
 
 
+def logic_always_1(input_: list) -> float:
+    return 1
+
+
+def logic_always_0(input_: list) -> float:
+    return 0
+
+def logic_always_2(input_: list) -> float:
+    return 2
+
+def logic_always_5(input_: list) -> float:
+    return 5
+
+def logic_always_pi(input_: list) -> float:
+    return math.pi
+
+
 def logic_cable(input_: list) -> float:
     return input_[0]
 
@@ -81,7 +101,15 @@ def logic_cap(input_: list) -> float:
 def logic_div(input_: list) -> float:
     if input_[1] != 0:
         return input_[0] / input_[1]
-    return 0
+    return 1
+
+
+def logic_root(input_: list) -> float:
+    if input_[0] > 0:
+        x = math.sqrt(input_[0])
+    else:
+        x = 0
+    return x
 
 
 def logic_modulo(input_: list) -> float:
@@ -103,20 +131,26 @@ def pythagoras(input_: list[float]) -> float:
 
 list_of_logic_gates: list[list]= [
     [logic_and,     2, 1, "and"      ],
-    [logic_and_switch,     3, 1, "and-switch"      ],
+    #[logic_and_switch,     3, 1, "and-switch"      ],
     [logic_nand,     2, 1, "nand"      ],
     [logic_nor,     2, 1, "nor"      ],
     [logic_xnor,     2, 1, "xnor"      ],
     [logic_or,      2, 1, "or"       ],
     [logic_xor,     2, 1, "xor"       ],
     [logic_not,     1, 1, "not"      ],
-    [logic_cable,   1 ,1, "cable"    ],
-    [logic_plus,     2, 1, "plus"      ],
-    [logic_minus,     2, 1, "minus"      ],
-    [logic_times,     2, 1, "times"      ],
-    [logic_cap,     1, 1, "cap"      ],
-    [logic_div,     2, 1, "div"      ],
-    [logic_modulo,     2, 1, "modulo"      ],
-    [pythagoras,     2, 1, "pythagoras"      ],
+    [logic_always_1,     1, 1, "always 1"      ],
+    [logic_always_0,     1, 1, "always 0"      ],
+    #[logic_always_2,     1, 1, "always 2"      ],
+    #[logic_always_5,     1, 1, "always 5"      ],
+    #[logic_always_pi,     1, 1, "Pi"      ],
+    #[logic_cable,   1 ,1, "cable"    ],
+    #[logic_plus,     2, 1, "plus"      ],
+    #[logic_minus,     2, 1, "minus"      ],
+    #[logic_times,     2, 1, "times"      ],
+    #[logic_cap,     1, 1, "cap"      ],
+    #[logic_div,     2, 1, "div"      ],
+    #[logic_root,     1, 1, "root"      ],
+    #[logic_modulo,     2, 1, "modulo"      ],
+    #[pythagoras,     2, 1, "pythagoras"      ],
 ]
 

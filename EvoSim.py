@@ -4,26 +4,20 @@ import time
 from functools import partial
 
 import CircuitObject
-import CircuitRun
 import Evaluation
 import settings
 from Mutator import create, mutate, crossover
 
 config = settings.EvolutionConfig()
 
-
-def worker_evo(specie, gen: int, inout: list[list], penalty: float):
-    best, score, score_list = Evaluation.evaluator(specie, gen, inout, penalty)
-    return best, score, score_list
-
-
 def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
     top_p = int(config.TOP_POPULATION * config.POPULATION)
 
+
     bests_of_generation_with_score = []
+
     # create the initial pool of gen 0
     gene_pool = []
-
     for _ in range(config.GEN_POOL):
         species = [create(input_output, lane_num=config.LANES, lane_size=config.LANES_SIZE) for _ in range(config.POPULATION)]
         gene_pool.append(species)
@@ -32,13 +26,11 @@ def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
     size_penalty = False
     for current_generation in range(config.GENERATIONS):
 
-
         gene_pool_next: list[list] = []
         bests_of_generation_with_score = []
 
-
         #-----Multithreading-----#
-        worker = partial(worker_evo, gen=current_generation, inout=input_output, penalty=size_penalty)
+        worker = partial(Evaluation.evaluator, gen_num=current_generation, input_output=input_output, size_penalty=size_penalty)
         if config.MULTITHREADING:
             with multiprocessing.Pool(processes=config.CORES) as process_pool:
                 result = process_pool.map(worker, gene_pool)
@@ -53,7 +45,7 @@ def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
             if current_generation % 200 == 0:
                 print("________________")
                 the_best_of_the_species.visual()
-                CircuitRun.circuit_run_truth_table(the_best_of_the_species, input_output, debug=True)
+                Evaluation.circuit_run_truth_table(the_best_of_the_species, input_output, debug=True)
                 print("________________")
 
             #----Prepare the next generation.----#
@@ -129,28 +121,27 @@ def replace_worst_species_in_pool(bests_of_gen, gen_pool_t, generations_count, i
     max_removal         = 2
     removed             = 0
     for i, worst_for_check in enumerate(bests_of_gen):
-        if worst < worst_for_check[1] > best_score * 1.4 and i < len(bests_of_gen) * 0.7:
+        if worst < worst_for_check[1] > best_score * 1.2 and i < len(bests_of_gen) * 0.7 and removed < 1:
             worst_check_select = i
             worst = worst_for_check[1]
+            removed += 1
 
+            print(f"Removing: {worst_check_select} with a score of {bests_of_gen[worst_check_select][1]}")
+            new_species = []
+            at_random_crossover_mutation_creation = random.randint(1, 3)
 
-    if worst_check_select > -1:
-        print(f"Removing: {worst_check_select} with a score of {bests_of_gen[worst_check_select][1]}")
-        new_species = []
-        at_random_crossover_mutation_creation = random.randint(1, 3)
+            if at_random_crossover_mutation_creation == 1:
+                new_species.extend([crossover_best(bests) for _ in
+                               range(config.POPULATION)])
 
-        if at_random_crossover_mutation_creation == 1:
-            new_species.extend([crossover_best(bests) for _ in
-                           range(config.POPULATION)])
+            if at_random_crossover_mutation_creation == 2:
+                create_new_circuits(bests, new_species, config.POPULATION)
 
-        if at_random_crossover_mutation_creation == 2:
-            create_new_circuits(bests, new_species, config.POPULATION)
-
-        if at_random_crossover_mutation_creation == 3:
-            new_species.extend([create(input_output, lane_num=config.LANES, lane_size=config.LANES_SIZE) for _ in
-                                range(round(config.POPULATION))])
-        gen_pool_t.remove(gen_pool_t[worst_check_select])
-        gen_pool_t.append(new_species)
+            if at_random_crossover_mutation_creation == 3:
+                new_species.extend([create(input_output, lane_num=config.LANES, lane_size=config.LANES_SIZE) for _ in
+                                    range(round(config.POPULATION))])
+            gen_pool_t.remove(gen_pool_t[worst_check_select])
+            gen_pool_t.append(new_species)
 
 
 

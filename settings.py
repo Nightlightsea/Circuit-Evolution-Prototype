@@ -2,15 +2,15 @@ class EvolutionConfig:
     def __init__(self):
 
         # ---Simulation Settings--- #
-        self.GENERATIONS = 4000
+        self.GENERATIONS = 2000
         self.GEN_POOL = 20
         self.POPULATION = 100
-        self.PENALTY = 0.8
+        self.PENALTY = 0.7
         self.TOP_POPULATION = 0.2
 
         # ---Multithreading--- #
         self.MULTITHREADING = True
-        self.CORES = 4
+        self.CORES = 8
 
         # ---Circuit Settings--- #
         self.LANES = 5
@@ -33,11 +33,11 @@ class EvolutionConfig:
         self.COMPUTE_ROUNDS = 10
 
 in_out = [
-        [[1, 0, 1, 0], [1, 0, 0, 0]],
-        [[1, 0, 0, 0], [0, 0, 0, 1]],
-        [[0, 0, 0, 0], [1, 0, 0, 0]],
-        [[0, 0, 1, 0], [0, 0, 0, 1]],
-        [[0, 1, 0, 0], [1, 0, 0, 0]]
+        [[0, 0, 0, 0], [0, 0, 0, 1]],
+        [[0, 0, 0, 1], [0, 0, 1, 0]],
+        [[0, 0, 1, 1], [0, 0, 1, 1]],
+        [[0, 1, 1, 1], [0, 1, 0, 0]],
+        [[1, 1, 0, 0], [0, 1, 0, 1]]
     ]
 
 decimal_to_binary = [
@@ -52,6 +52,7 @@ decimal_to_binary = [
     [[8], [1,0,0,0]],
     [[9], [1,0,0,1]]
 ]
+
 
 truth_table_full_adder_3_in_2_out = [
         [[0, 0, 0], [0, 0]],  # 0 + 0 + 0 = 0, Cout = 0
@@ -83,6 +84,14 @@ truth_table_4_in_4_out_logic1 = [
         [[1, 1, 1, 0], [0, 1, 1, 0]],  # In: 1110, Out: 1^1=0, 1&1=1, 1|0=1, !1=0
         [[1, 1, 1, 1], [0, 1, 1, 0]],  # In: 1111, Out: 1^1=0, 1&1=1, 1|1=1, !1=0
     ]
+
+exponential_list = [
+    [[0],[2]],
+    [[1],[1.8]],
+    [[2],[1.2]],
+    [[3],[0.2]],
+    [[4],[-1.2]],
+]
 
 pythagoras_truth_table = [
         [[2, 2], [8]],
