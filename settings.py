@@ -2,7 +2,7 @@ class EvolutionConfig:
     def __init__(self):
 
         # ---Simulation Settings--- #
-        self.GENERATIONS = 5000
+        self.GENERATIONS = 10000
         self.GEN_POOL = 20
         self.POPULATION = 100
         self.PENALTY = 0.8
