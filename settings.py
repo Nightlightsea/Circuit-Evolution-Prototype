@@ -2,10 +2,10 @@ class EvolutionConfig:
     def __init__(self):
 
         # ---Simulation Settings--- #
-        self.GENERATIONS = 2000
+        self.GENERATIONS = 5000
         self.GEN_POOL = 20
         self.POPULATION = 100
-        self.PENALTY = 0.7
+        self.PENALTY = 0.8
         self.TOP_POPULATION = 0.2
 
         # ---Multithreading--- #
@@ -25,7 +25,7 @@ class EvolutionConfig:
 
         # ---Crossover Settings--- #
         self.GENERATION_CROSSOVER = 50
-        self.GENERATION_CROSSOVER_DURATION = 1
+        self.GENERATION_CROSSOVER_DURATION = 2
         self.CROSSOVER_IN_GEN = 5
 
         # ---Stuff--- #
@@ -33,11 +33,14 @@ class EvolutionConfig:
         self.COMPUTE_ROUNDS = 10
 
 in_out = [
-        [[0, 0, 0, 0], [0, 0, 0, 1]],
-        [[0, 0, 0, 1], [0, 0, 1, 0]],
-        [[0, 0, 1, 1], [0, 0, 1, 1]],
-        [[0, 1, 1, 1], [0, 1, 0, 0]],
-        [[1, 1, 0, 0], [0, 1, 0, 1]]
+        [[0, 0, 1, 0], [0, 0, 1, 0]],
+        [[0, 1, 0, 1], [0, 1, 0, 0]],
+        [[0, 0, 1, 1], [0, 0, 1, 0]],
+        [[0, 0, 0, 1], [0, 0, 0, 1]],
+        [[1, 0, 0, 0], [1, 0, 0, 0]],
+        [[1, 0, 0, 1], [1, 0, 0, 0]],
+        [[0, 1, 1, 0], [0, 1, 0, 0]],
+        [[0, 0, 1, 0], [0, 0, 1, 0]],
     ]
 
 decimal_to_binary = [
@@ -113,7 +116,7 @@ pythagoras_truth_table = [
 
 prime = [
         [[2], [3]],
-        [[2], [5]],
+        [[3], [5]],
         [[5], [7]],
         [[7], [11]],
         [[11], [13]],

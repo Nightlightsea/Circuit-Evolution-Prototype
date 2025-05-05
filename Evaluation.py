@@ -1,30 +1,38 @@
 import CircuitObject
 import settings
+from CircuitObject import CircuitObjekt
 from CircuitRun import execute_circuit
 
 config = settings.EvolutionConfig()
 
-def evaluator(species: list[CircuitObject.CircuitObjekt], gen_num, input_output, size_penalty=False):
 
-    best = species[0]
-    worst_score = float('inf')
-    gen_score_list = []
-    for index, circuit in enumerate(species):
-        if circuit.get_last_change() >= gen_num:
+def evaluator(species: list[int | list[CircuitObject.CircuitObjekt]], gen_num, input_output, size_penalty=False) -> \
+tuple[CircuitObjekt, float, list[int | list[CircuitObjekt]]]:
+
+    best = species[1][0]
+    best_score = float('inf')
+    specie_score_list = []
+    specie_id = species[0]
+    specie = species[1]
+    for index, circuit in enumerate(specie):
+        if circuit.get_last_change() >= gen_num: # if it's a new circuit, compute it's score.
             circuit.set_score(circuit_run_truth_table(circuit, input_output), gen_num)
-        gen_score: float = circuit.get_score() + circuit.get_gate_length() if size_penalty else circuit.get_score()
 
-        gen_score_list.append([gen_score, circuit])
-        if gen_score < worst_score:
+        # If the gate penalty is activated, add the number of gates to the score.
+        specie_score: float = circuit.get_score() + circuit.get_gate_length() if size_penalty else circuit.get_score()
+
+        specie_score_list.append([specie_score, circuit])
+        if specie_score < best_score:
             best = circuit
-            worst_score = gen_score
+            best_score = specie_score
 
-    gen_score_sorted: list[list] = sorted(gen_score_list, key=lambda item: item[0])
-    sorted_gen: list[CircuitObject.CircuitObjekt] = []
-    for gens in gen_score_sorted:
-        sorted_gen.append(gens[1])
+    specie_score_sorted: list[list] = sorted(specie_score_list, key=lambda item: item[0])
+    specie_sorted: list[int | list[CircuitObject.CircuitObjekt]] = [specie_id, []]
+    for gens in specie_score_sorted:
+        specie_sorted[1].append(gens[1])
 
-    return best, worst_score, sorted_gen
+    return best, best_score, specie_sorted
+
 
 def circuit_run_truth_table(circuit: CircuitObject.CircuitObjekt, truth_table, debug=False) -> int:
     initial_lanes, gates = circuit.__getitem__()

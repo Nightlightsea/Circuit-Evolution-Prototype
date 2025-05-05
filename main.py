@@ -8,7 +8,7 @@ config = settings.EvolutionConfig()
 
 if __name__ == '__main__':
 
-    truth_table = settings.in_out
+    truth_table = settings.truth_table_4_in_4_out_logic1
 
     # run simulation and get the best result
     if config.MULTITHREADING:
@@ -16,6 +16,7 @@ if __name__ == '__main__':
     else:
         print("Starting simulation without multithreading")
     sleep(2)
+
     the_best = run_simulation(truth_table)
 
     # visualize the best result

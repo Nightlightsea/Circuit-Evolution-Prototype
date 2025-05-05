@@ -21,7 +21,7 @@ def visualizer(lanes, gates):
         x = str(gate[0]).split(" ")[1]
         for u in list_of_logic_gates:
             if x == str(u[0]).split(" ")[1]:
-                the_gate = f"{gate_count}[{u[3]}]"
+                the_gate = f"{gate_count}[{u[3]} {'-'.join([str(inh) for inh in gate[3]])}]"
                 break
 
         for i, inputs in enumerate(gate[1]):

@@ -35,11 +35,7 @@ def run_once(gates, lanes, lanes_next_state):
         for in_connection in gate[1]:
             con_in.append(lanes[in_connection[0]][in_connection[1]])
 
-        try:
-            out = gate[0](con_in)  # Assume gate[0] returns a list/tuple if multiple outputs
-        except ValueError as e:
-            print(f"Error: {e}")
-            out = 0
+        out = gate[0](con_in, gate[2])  # Assume gate[0] returns a list/tuple if multiple outputs
         if not isinstance(out, (list, tuple)):  # Ensure output is iterable
             out = [out]
 
