@@ -1,10 +1,8 @@
 import copy
 
-import CircuitObject
 import settings
 
 config = settings.EvolutionConfig()
-
 
 def execute_circuit(gates, initial_lanes: list[list], truth_table_row: list[list]):
     lanes = copy.deepcopy(initial_lanes)

@@ -1,7 +1,7 @@
-import CircuitObject
+from circuit import CircuitObject
 import settings
-from CircuitObject import CircuitObjekt
-from CircuitRun import execute_circuit
+from circuit.CircuitObject import CircuitObjekt
+from circuit.RunCircuit import execute_circuit
 
 config = settings.EvolutionConfig()
 

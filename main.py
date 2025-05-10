@@ -1,14 +1,15 @@
 from time import sleep
 
+from truth_tables import TestTables
 import settings
-from Evaluation import circuit_run_truth_table
-from EvoSim import run_simulation
+from simulation.Evaluation import circuit_run_truth_table
+from simulation.EvoSim import run_simulation
 
 config = settings.EvolutionConfig()
 
 if __name__ == '__main__':
 
-    truth_table = settings.truth_table_4_in_4_out_logic1
+    truth_table = TestTables.decimal_to_binary
 
     # run simulation and get the best result
     if config.MULTITHREADING:

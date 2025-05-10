@@ -1,4 +1,6 @@
-from Mutator import create, mutate, crossover
+from circuit_management.Mutate import mutate
+from circuit_management.Create import create
+from circuit_management.Crossover import crossover
 
 if __name__ == '__main__':
     empty_test_truth_table = [[[0,0,0],[0,0,0]]]

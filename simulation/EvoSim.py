@@ -5,10 +5,12 @@ import time
 from functools import partial
 import matplotlib.pyplot as plt
 
-import CircuitObject
-import Evaluation
+from circuit import CircuitObject
+from simulation import Evaluation
 import settings
-from Mutator import create, mutate, crossover
+from circuit_management.Mutate import mutate
+from circuit_management.Create import create
+from circuit_management.Crossover import crossover
 
 config = settings.EvolutionConfig()
 
@@ -51,14 +53,14 @@ def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
         species_id += 1
         gene_pool.append(species)
 
-    start: float = time.time()
-    size_penalty = False
+    start: float = time.time() # start timer.
+    size_penalty: bool = False
     for current_generation in range(config.GENERATIONS):
 
         gene_pool_next: list[list] = []
         bests_of_generation_with_score = []
 
-        #-----Multithreading-----#
+        # -----Multithreading----- #
         worker = partial(Evaluation.evaluator, gen_num=current_generation, input_output=input_output, size_penalty=size_penalty)
         if config.MULTITHREADING:
             with multiprocessing.Pool(processes=config.CORES) as process_pool:
@@ -94,12 +96,10 @@ def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
 
         time_taken: float = time.time() - start
 
-
         #if current_generation % 10 == 0:
         #    animate_generation(best_history, ax, fig)
 
-
-        # crossover between gens, still needs improvements because it's too random right now.
+        # crossover between species.
         if current_generation % config.GENERATION_CROSSOVER <= config.GENERATION_CROSSOVER_DURATION < current_generation:
             print("------")
             for i in range(len(gene_pool_next)):
@@ -147,7 +147,7 @@ def replace_worst_species_in_pool(bests_of_gen, gen_pool_t, generations_count, i
     num_species = len(bests_of_gen)
     if num_species < 2:
         # Need at least two species to compare and potentially remove one
-        return
+        return None
 
     scores              = [circ[1] for circ in bests_of_gen]
     bests               = [best_c[0] for best_c in bests_of_gen]
@@ -157,7 +157,7 @@ def replace_worst_species_in_pool(bests_of_gen, gen_pool_t, generations_count, i
     max_removal         = 2
     removed             = 0
     for i, worst_for_check in enumerate(bests_of_gen):
-        if worst <= worst_for_check[1] > best_score * 1 and i < len(bests_of_gen) * 1 and removed <= 10:
+        if worst <= worst_for_check[1] > best_score * 1.1 and i < len(bests_of_gen) * 0.7 and removed <= 3:
             worst_check_select = worst_for_check[2]
             worst = worst_for_check[1]
             removed += 1

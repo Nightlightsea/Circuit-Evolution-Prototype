@@ -1,4 +1,4 @@
-import Visualizer
+from circuit import Visualizer
 
 
 class CircuitObjekt:

@@ -1,4 +1,4 @@
-from LogicGates import list_of_logic_gates
+from logic_gates.LogicGates import list_of_logic_gates
 
 
 def visualizer(lanes, gates):
