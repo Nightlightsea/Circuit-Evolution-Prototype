@@ -2,22 +2,22 @@ class EvolutionConfig:
     def __init__(self):
 
         # ---Simulation Settings--- #
-        self.GENERATIONS = 2000
-        self.GEN_POOL = 30
+        self.GENERATIONS = 4000
+        self.GEN_POOL = 10
         self.POPULATION = 100
         self.PENALTY = 0.80
         self.TOP_POPULATION = 0.2
 
         # ---Multithreading--- #
         self.MULTITHREADING = True
-        self.CORES = 8
+        self.CORES = 4
 
         # ---Circuit Settings--- #
-        self.LANES = 4
+        self.LANES = 5
         self.LANES_SIZE = 5
         self.INITIAL_GATE_AMOUNT = 5
         self.MINIMAL_GATE_AMOUNT = 2
-        self.MAXIMAL_GATE_AMOUNT = 30
+        self.MAXIMAL_GATE_AMOUNT = 100
 
         # ---Mutations Settings--- #
         self.MUTATION_RATE = 0.2
@@ -30,4 +30,4 @@ class EvolutionConfig:
 
         # ---Stuff--- #
         self.NEW_IN_GEN = 40
-        self.COMPUTE_ROUNDS = 10
+        self.COMPUTE_ROUNDS = 100

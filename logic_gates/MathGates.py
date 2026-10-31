@@ -1,6 +1,7 @@
 import math
 
 
+
 def logic_random_int(input_: list, value) -> float:
     return value[0]
 
@@ -26,6 +27,10 @@ def logic_cap(input_: list, *argv) -> float:
         return 1
     return 0
 
+def gate_biggest(input_: list, *argv) -> float:
+    biggest = max(input_)
+    return biggest
+
 
 def logic_div(input_: list, *argv) -> float:
     if input_[0] < 99999 and input_[1] < 99999:
@@ -46,7 +51,10 @@ def logic_root(input_: list, *argv) -> float:
 
 def logic_modulo(input_: list, *argv) -> float:
     if input_[1] != 0:
-        return input_[0] % input_[1]
+        try:
+            return input_[0] % input_[1]
+        except OverflowError:
+            return float("inf")
     else:
         return 0
 
@@ -60,3 +68,6 @@ def pythagoras(input_: list[float], *argv) -> float:
 
 def logic_always_2(input_: list, *argv) -> float:
     return 2
+
+def two_plus_1_minus(input_: list, *argv) -> float:
+    return (input_[0] + input_[1]) - input_[2]

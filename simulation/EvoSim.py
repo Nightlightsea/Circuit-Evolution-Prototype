@@ -57,42 +57,8 @@ def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
     size_penalty: bool = False
     for current_generation in range(config.GENERATIONS):
 
-        gene_pool_next: list[list] = []
-        bests_of_generation_with_score = []
-
-        # -----Multithreading----- #
-        worker = partial(Evaluation.evaluator, gen_num=current_generation, input_output=input_output, size_penalty=size_penalty)
-        if config.MULTITHREADING:
-            with multiprocessing.Pool(processes=config.CORES) as process_pool:
-                result = process_pool.map(worker, gene_pool)
-        else:
-            result = map(worker, gene_pool)
-        # ------------------------------ #
-
-        for the_best_of_the_species, score_of_circuit, species_score_list in result:
-            population_size: int = config.POPULATION
-
-            if current_generation % 200 == 0:
-                print("________________")
-                the_best_of_the_species.visual()
-                Evaluation.circuit_run_truth_table(the_best_of_the_species, input_output, debug=True)
-                print("________________")
-
-            #if f'{species_score_list[0]}' not in best_history:
-            #    best_history[f'{species_score_list[0]}'] = {}
-            #best_history[f'{species_score_list[0]}'][f'{current_generation}'] = score_of_circuit
-
-            #----Prepare the next generation.----#
-            top_bests_of_the_species = species_score_list[1][:top_p].copy()
-            next_generation_of_species = [species_score_list[0], []]
-            next_generation_of_species[1].extend(top_bests_of_the_species)
-
-            population_size -= len(top_bests_of_the_species)
-            create_new_circuits(top_bests_of_the_species, next_generation_of_species[1], population_size)
-
-            bests_of_generation_with_score.append((the_best_of_the_species, score_of_circuit, species_score_list[0]))
-            gene_pool_next.append(next_generation_of_species)
-            # ------------------------------ #
+        bests_of_generation_with_score, gene_pool_next = evo_run(bests_of_generation_with_score, current_generation,
+                                                                 gene_pool, input_output, size_penalty, top_p)
 
         time_taken: float = time.time() - start
 
@@ -127,6 +93,45 @@ def run_simulation(input_output: list) -> CircuitObject.CircuitObjekt:
     the_very_best = sorted(bests_of_generation_with_score, key=lambda item: item[1])[0]
 
     return the_very_best[0]
+
+
+def evo_run(bests_of_generation_with_score, current_generation, gene_pool, input_output, size_penalty, top_p):
+    gene_pool_next: list[list] = []
+    bests_of_generation_with_score = []
+    # -----Multithreading----- #
+    worker = partial(Evaluation.evaluator, gen_num=current_generation, input_output=input_output,
+                     size_penalty=size_penalty)
+    if config.MULTITHREADING:
+        with multiprocessing.Pool(processes=config.CORES) as process_pool:
+            result = process_pool.map(worker, gene_pool)
+    else:
+        result = map(worker, gene_pool)
+    # ------------------------------ #
+    for the_best_of_the_species, score_of_circuit, species_score_list in result:
+        population_size: int = config.POPULATION
+
+        if current_generation % 200 == 0:
+            print("________________")
+            the_best_of_the_species.visual()
+            Evaluation.circuit_run_truth_table(the_best_of_the_species, input_output, debug=True)
+            print("________________")
+
+        # if f'{species_score_list[0]}' not in best_history:
+        #    best_history[f'{species_score_list[0]}'] = {}
+        # best_history[f'{species_score_list[0]}'][f'{current_generation}'] = score_of_circuit
+
+        # ----Prepare the next generation.----#
+        top_bests_of_the_species = species_score_list[1][:top_p].copy()
+        next_generation_of_species = [species_score_list[0], []]
+        next_generation_of_species[1].extend(top_bests_of_the_species)
+
+        population_size -= len(top_bests_of_the_species)
+        create_new_circuits(top_bests_of_the_species, next_generation_of_species[1], population_size)
+
+        bests_of_generation_with_score.append((the_best_of_the_species, score_of_circuit, species_score_list[0]))
+        gene_pool_next.append(next_generation_of_species)
+        # ------------------------------ #
+    return bests_of_generation_with_score, gene_pool_next
 
 
 def create_new_circuits(bests, new_gen, pop):
